@@ -1,82 +1,40 @@
-# DROP GEAR — Plataforma E-Commerce Multi-Tienda
+DROP GEAR — Plataforma E-Commerce Multi-Tienda
+Marketplace de productos de calidad verificada. Compra directa, sin intermediarios, con páginas de aterrizaje dinámicas personalizadas por cada proveedor.
 
-> Marketplace de productos de calidad verificada. Compra directa, sin intermediarios, con páginas de aterrizaje dinámicas personalizadas por cada proveedor.
+🚀 Estado Actual del Proyecto (PRODUCCIÓN LISTA)
+Actualmente, el código cuenta con la arquitectura Core, UI/UX y Hardening de Producción completados. Los motores de renderizado de la tienda pública, gestión de catálogo por proveedores y panel automático de administración están listos para su despliegue en contenedores efímeros (Railway).
 
-## 🚀 Estado Actual del Proyecto (MVP)
+✨ Funcionalidades Destacadas
+Aterrizaje Dinámico de Productos: Páginas personalizadas con Layouts estructurales (Split, Full, Minimal), colores de acento y tipografías premium (DM Sans, Playfair, Syne).
+Guest Checkout Dinámico: Flujo de compra por contrareembolso/coordinación de pago súper optimizado y veloz, manejado por un CartContext global y subidas asíncronas de órdenes.
+Gestión Integral de Galería a la Nube: Sistema de subida de imágenes conectado nativamente a Cloudinary (vía multer-storage-cloudinary), descartando por completo el almacenamiento local.
+Sistema de Blogging (Marketing): Procesador Markdown CMS para publicar artículos y noticias visible desde la tienda principal.
+🛠️ Stack Tecnológico Delineado para Railway
+El ecosistema es un monorepo manejado por pnpm compuesto por los siguientes servicios:
 
-Actualmente, el proyecto cuenta con la **arquitectura Core y UI/UX completada al 80%**. 
-Los motores de renderizado de la tienda pública, gestión de catálogo por proveedores y panel automático de administración están sólidos y en fase operativa para desarrollo.
+Módulo	Tecnología	Variables Clave Requeridas
+Marketplace Público	React + Vite	VITE_API_URL apuntando al backend público.
+Provider Dashboard	React + Vite	VITE_API_URL apuntando al backend público.
+Admin Panel	React + Vite	VITE_API_URL apuntando al backend público.
+API REST Backend	Node.js + Express	ALLOWED_ORIGINS para validación CORS.
+Motor de Base de Datos	Prisma + PostgreSQL	DATABASE_URL vinculada a DB remota.
+⚙️ Reglas de Despliegue Actual (Hardening Aplicado)
+Variables de Entorno Activas:
 
-### ✨ Funcionalidades Destacadas (Implementadas)
-*   **Aterrizaje Dinámico de Productos**: Las páginas de productos no son genéricas. Cada proveedor puede elegir entre distintos Layouts estructurales (`Split`, `Full`, `Minimal`), personalizar los colores de acento y fondos, y aplicar familias tipográficas premium (`DM Sans`, `Playfair`, `Syne`, etc.).
-*   **Soporte Multimedia y SEO**: Módulo principal (hero) del producto que soporta redacción para posicionamiento SEO y el anclaje nativo de un **Video Interactivo** introductorio.
-*   **Gestión Integral de Galería**: Sistema fluido de subida múltiple de imágenes integrado asíncronamente con la API.
-*   **Arquitectura de Upload Adaptable**: El guardado de archivos de los proveedores, implementado con un *Adapter Pattern* (`UploadService.js`), corre actualmente en *Modo Local* (listo para Railway Volumes / VPS). Posee la estructura armada y bloqueada en código para activar de inmediato **Cloudinary o AWS S3** inyectando sus credenciales.
-*   **Sistema de Blogging (Marketing)**: Completo procesador Markdown CMS para que dueños y administradores publiquen artículos y noticias.
+Todo llamado estático hacia localhost fue erradicado. Los frontends leen VITE_API_URL.
+El Backend lee de manera dinámica process.env.PORT y escucha explícitamente en IP 0.0.0.0.
+Posee un endpoint de latido (GET /health) en la raíz del API.
+Inicialización e Idempotencia (Prisma):
 
----
+El motor principal ya no es SQLite, es nativamente PostgreSQL.
+Los scripts iniciales (
 
-## 🛠️ Stack Tecnológico
+seed.js
+) están construidos con bloques condicionales (Upsert o find-and-skip) siendo 100% idempotentes (seguros de correr múltiples veces en los deploys).
+🚧 Hoja de Ruta (Roadmap) Restante
+✅ (COMPLETADO) Migración Efectiva del Storage a Cloud (Cloudinary). ✅ (COMPLETADO) Escalamiento de SQL (Migración total a PostgreSQL). ✅ (COMPLETADO) Flujo MVP de Cajas y Carrito Sin-Registro.
 
-El ecosistema es un monorepo hiper-enlazado utilizando *Turborepo* y manejado por `pnpm`.
-
-| Módulo | Tecnología | Puerto | Descripción |
-|---|---|---|---|
-| **Marketplace Público** | React + Vite | `3000` | Front-end donde clientes exploran y compran. |
-| **Provider Dashboard** | React + Vite | `3001` | Panel B2B para carga de contenido visual y de stock. |
-| **Admin Panel** | React + Vite | `3002` | Panel superior para auditoría de plataformas. |
-| **API REST Backend** | Node.js + Express | `4000` | Rutas de procesamiento y servicios orquestados. |
-| **Motor de Base de Datos** | Prisma ORM + SQLite | `—` | Almacenamiento veloz de DEV. Fácil de escalar a PostgreSQL. |
-
----
-
-## ⚙️ Primeros Pasos (Arranque Local)
-
-Se requiere tener instalado [Node.js](https://nodejs.org/) y [pnpm](https://pnpm.io).
-
-### 1. Variables de Entorno
-Copia y configura las credenciales falsas/bases en la rama de la API:
-```bash
-cd shopping-api
-cp .env.example .env
-```
-*(Puedes dejar los valores predeterminados de desarrollo para testear rápido).*
-
-### 2. Iniciar y Poblar Base de Datos (Prisma)
-Para estructurar las tablas y precargar la data ficticia (incluyendo al usuario administrador):
-```bash
-cd shopping-api
-npx prisma db push          # Construye el esqueleto relacional en SQLite
-node prisma/seed.js         # Genera el super-admin
-node seed-marketplace.js    # Rellena escaparate con tiendas de ejemplo
-```
-
-### 3. Levantar la Flota (Concurrencia)
-Desde la **raíz absoluta del directorio (`/shopping`)**, instala y ejecuta:
-```bash
-pnpm install
-pnpm dev
-```
-> Esto levantará paralelamente los 3 puertos del front-end y el nodemon del back-end con HMR activo.
-
----
-
-## 🔐 Autenticación de Desarrollo
-
-Para ingresar directamente al BackOffice Administrativo (`localhost:3002`):
-*   **Usuario Base:** `admin@dropgear.store` 
-*   **Contraseña:** `dropgearadmin`
-
-*(Cámbiese al pasar a infraestructura viva. Nuevos proveedores crean su cuenta mediante `/register` en el portal).*
-
----
-
-## 🚧 Hoja de Ruta (Roadmap) hacia Producción
-
-Las siguientes integraciones conforman el 20% bloqueante ("motor duro") requerido para su despliegue seguro al público:
-
-- [ ] **Pasarela de Pagos Transaccional (ej. MercadoPago Checkout Pro)**: Implementación de enrutamiento al portal de pago y captura de firmas (webhooks).
-- [ ] **Gestor de Envíos y Logística**: Lógica sólida en panel para asignar estados de seguimiento (`Preparando`, `En transito`) a las guías de correos privados.
-- [ ] **Seguridad e Identidad**: Confirmación de emails cruzados y recuperación de claves JWT (Forgot Password / SendGrid).
-- [ ] **Migración Efectiva del Storage a Cloud**: Sustituir el volumen local habilitando la variable `STORAGE_MODE=cloudinary` o S3.
-- [ ] **Escalamiento de SQL**: Transicionar Prisma a motor PostgreSQL hospedado (Supabase/Railway/Neon).
+ Pasarela de Pagos Transaccional (MercadoPago): Reemplazar el método de "Pago a Coordinar" actual por firmas JWT y webhooks formales.
+ Gestor de Envíos y Logística: Lógica en panel para asignar la guía de correo.
+ Emailing Transaccional: Incorporar SendGrid o Resend para confirmación de órdenes al cliente y recuperación de claves.
+(Sabiendo que esta es mi documentación final, por favor dame instrucciones explícitas de qué Comandos debe ejecutar Railway para construir y servir cada frontend Vite de forma estática).
