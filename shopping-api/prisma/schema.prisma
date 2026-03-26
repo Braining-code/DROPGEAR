@@ -1,0 +1,106 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Store {
+  id          String    @id @default(cuid())
+  name        String
+  slug        String    @unique
+  verified    Boolean   @default(false)
+  active      Boolean   @default(false) // Pending approval by admin
+  cuit        String?
+  razonSocial String?
+  telefono    String?
+  primaryColor String   @default("#C8472B")
+  bgColor     String    @default("#F7F3EC")
+  fontId      String    @default("dm")
+  logoUrl     String?
+  image1Url   String?
+  image2Url   String?
+  userId      String
+  user        User      @relation(fields: [userId], references: [id])
+  products    Product[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Product {
+  id           String   @id @default(cuid())
+  name         String
+  slug         String   @unique
+  category     String
+  tagline      String?
+  description  String?
+  price        Int
+  subPrice     Int?
+  layout       String   @default("split")
+  fontId       String   @default("dm")
+  primaryColor String   @default("#C8472B")
+  bgColor      String   @default("#F7F3EC")
+  heroImageUrl String?
+  image2Url    String?
+  image3Url    String?
+  image4Url    String?
+  videoUrl     String?
+  videoTitle   String?
+  videoSub     String?
+  videoMode    String   @default("video")
+  gallery      String?  // JSON: ["url1", "url2"]
+  seoH2        String?
+  seoBody      String?
+  status       String   @default("borrador")
+  featuredOrder Int     @default(0)
+  badges       String?  // JSON: ["badge1","badge2"]
+  stats        String?  // JSON: [{"value":"...","label":"..."}]
+  faqs         String?  // JSON: [{"q":"...","a":"..."}]
+  storeId      String
+  store        Store    @relation(fields: [storeId], references: [id])
+  orders       Order[]
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Order {
+  id          String   @id @default(cuid())
+  status      String   @default("pendiente")
+  total       Int
+  qty         Int      @default(1)
+  customerName String
+  customerEmail String
+  address     String?
+  mpPaymentId String?
+  productId   String
+  product     Product  @relation(fields: [productId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String   @default("")
+  role      String   @default("provider")
+  stores    Store[]
+  posts     Post[]
+  createdAt DateTime @default(now())
+}
+
+model Post {
+  id          String   @id @default(cuid())
+  title       String
+  slug        String   @unique
+  excerpt     String?
+  content     String   // Markdown/HTML content
+  thumbnailUrl String? // Miniatura externa
+  coverUrl    String?  // Portada interna post
+  published   Boolean  @default(false)
+  authorId    String
+  author      User     @relation(fields: [authorId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}

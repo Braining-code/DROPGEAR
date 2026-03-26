@@ -1,0 +1,17 @@
+{
+  "name": "shopping",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "pnpm --parallel dev",
+    "build": "pnpm --parallel build",
+    "lint": "pnpm --parallel lint"
+  },
+  "devDependencies": {
+    "pnpm": "^8.0.0"
+  }
+}
