@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 
-const API = import.meta.env.VITE_API_URL || `${API}`;
+const API = import.meta.env.VITE_API_URL || 'http://localhost:4000';
 
 
 // ─── FONTS (Google Fonts via @import) ─────────────────────────────────────────
