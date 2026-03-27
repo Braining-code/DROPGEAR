@@ -5,19 +5,26 @@ require('dotenv').config();
 
 const app = express();
 
+// 👉 Orígenes permitidos (robusto: env + fallback)
 const allowedOrigins = process.env.ALLOWED_ORIGINS
   ? process.env.ALLOWED_ORIGINS.split(',').map(o => o.trim()).filter(Boolean)
   : [
       'http://localhost:3000',
       'http://localhost:3001',
       'http://localhost:3002',
+      'https://courteous-miracle-production-553b.up.railway.app', // 👈 frontend producción
     ];
 
 const corsOptions = {
   origin(origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
+    // Permite requests sin origin (Postman, curl, healthchecks)
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.includes(origin)) {
       return callback(null, true);
     }
+
+    console.log('❌ CORS bloqueado para:', origin);
     return callback(new Error('Not allowed by CORS'));
   },
   credentials: true,
