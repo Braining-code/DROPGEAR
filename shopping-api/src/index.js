@@ -5,19 +5,20 @@ require('dotenv').config();
 
 const app = express();
 
-// 👉 Orígenes permitidos (robusto: env + fallback)
+// Orígenes permitidos
 const allowedOrigins = process.env.ALLOWED_ORIGINS
   ? process.env.ALLOWED_ORIGINS.split(',').map(o => o.trim()).filter(Boolean)
   : [
       'http://localhost:3000',
       'http://localhost:3001',
       'http://localhost:3002',
-      'https://courteous-miracle-production-553b.up.railway.app', // 👈 frontend producción
+      'https://dropgear-web.up.railway.app',
+      'https://dropgear-admin.up.railway.app',
+      'https://dropgear-provider.up.railway.app',
     ];
 
 const corsOptions = {
   origin(origin, callback) {
-    // Permite requests sin origin (Postman, curl, healthchecks)
     if (!origin) return callback(null, true);
 
     if (allowedOrigins.includes(origin)) {
@@ -25,12 +26,17 @@ const corsOptions = {
     }
 
     console.log('❌ CORS bloqueado para:', origin);
-    return callback(new Error('Not allowed by CORS'));
+    return callback(new Error(`Not allowed by CORS: ${origin}`));
   },
   credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  optionsSuccessStatus: 204,
 };
 
 app.use(cors(corsOptions));
+app.options(/.*/, cors(corsOptions));
+
 app.use(express.json());
 
 // Static files
@@ -58,4 +64,5 @@ const PORT = Number(process.env.PORT) || 4000;
 
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`API running on port ${PORT}`);
+  console.log('✅ Allowed origins:', allowedOrigins);
 });
