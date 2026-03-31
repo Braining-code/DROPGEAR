@@ -5,17 +5,11 @@ require('dotenv').config();
 
 const app = express();
 
-// Orígenes permitidos
-const allowedOrigins = process.env.ALLOWED_ORIGINS
-  ? process.env.ALLOWED_ORIGINS.split(',').map(o => o.trim()).filter(Boolean)
-  : [
-      'http://localhost:3000',
-      'http://localhost:3001',
-      'http://localhost:3002',
-      'https://dropgear-web.up.railway.app',
-      'https://dropgear-admin.up.railway.app',
-      'https://dropgear-provider.up.railway.app',
-    ];
+// Orígenes permitidos SOLO desde env
+const allowedOrigins = (process.env.ALLOWED_ORIGINS || '')
+  .split(',')
+  .map(o => o.trim())
+  .filter(Boolean);
 
 const corsOptions = {
   origin(origin, callback) {
