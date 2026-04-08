@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 
 const API = import.meta.env.VITE_API_URL || 'http://localhost:4000';
-const WEB = import.meta.env.VITE_WEB_URL || 'https://TU-WEB.up.railway.app';
 
 
 // ─── FONTS (Google Fonts via @import) ─────────────────────────────────────────
@@ -510,7 +509,7 @@ function LandingEditor({ product, onBack, token }) {
           <div style={{ fontFamily: "'DM Sans',sans-serif", fontSize: 11, color: P.muted, marginTop: 1 }}>Editando página · {product.category}</div>
         </div>
         <div style={{ marginLeft: "auto", display: "flex", gap: 8 }}>
-          <button onClick={() => window.open(`${WEB}/p/${product.slug || (form.name ? form.name.toLowerCase().replace(/[^a-z0-9]+/g, '-') : 'gran-reserva')}`, '_blank')} style={{ fontFamily: "'DM Sans',sans-serif", fontSize: 12, background: "transparent", color: P.muted, border: `1px solid ${P.border}`, borderRadius: 6, padding: "8px 14px", cursor: "pointer" }}>↗ Ver página</button>
+          <button onClick={() => window.open(`https://dropgear-web.up.railway.app/p/${product.slug || (form.name ? form.name.toLowerCase().replace(/[^a-z0-9]+/g, '-') : 'gran-reserva')}`, '_blank')} style={{ fontFamily: "'DM Sans',sans-serif", fontSize: 12, background: "transparent", color: P.muted, border: `1px solid ${P.border}`, borderRadius: 6, padding: "8px 14px", cursor: "pointer" }}>↗ Ver página</button>
           <button onClick={async () => {
             const payload = {
               name: form.name, category: form.category,
@@ -661,7 +660,7 @@ function ProductsList({ onEdit, token, user }) {
               <span style={{ fontFamily: "'DM Sans',sans-serif", fontSize: 9, color: P.muted, background: P.bg, padding: "2px 6px", borderRadius: 4, marginLeft: 3 }}>{FONTS.find(f => f.id === p.font)?.name || p.font}</span>
             </div>
             <div style={{ display: "flex", gap: 8, flexShrink: 0 }}>
-              <button onClick={() => window.open(`${WEB}/p/${p.slug || 'gran-reserva'}`, '_blank')} style={{ fontFamily: "'DM Sans',sans-serif", fontSize: 12, background: "transparent", color: P.muted, border: `1px solid ${P.border}`, borderRadius: 6, padding: "7px 12px", cursor: "pointer" }}>↗ Ver</button>
+              <button onClick={() => window.open(`https://dropgear-web.up.railway.app/p/${p.slug || 'gran-reserva'}`, '_blank')} style={{ fontFamily: "'DM Sans',sans-serif", fontSize: 12, background: "transparent", color: P.muted, border: `1px solid ${P.border}`, borderRadius: 6, padding: "7px 12px", cursor: "pointer" }}>↗ Ver</button>
               <button onClick={() => onEdit(p)} style={{ fontFamily: "'DM Sans',sans-serif", fontSize: 12, fontWeight: 600, background: "transparent", color: P.accent, border: `1px solid ${P.accent}`, borderRadius: 6, padding: "7px 14px", cursor: "pointer" }}>Editar página</button>
             </div>
           </div>
@@ -913,7 +912,7 @@ function ProviderDashboard({ onLogout, user, token }) {
             <button onClick={onLogout} style={{ width: "100%", display: "flex", alignItems: "center", gap: 8, padding: "8px 10px", borderRadius: 7, border: "none", cursor: "pointer", background: "transparent", color: P.red, textAlign: "left", fontSize: 11, fontFamily: "'DM Sans',sans-serif" }}>
               Cerrar sesión
             </button>
-            <button onClick={() => window.open(WEB, '_blank')} style={{ width: "100%", display: "flex", alignItems: "center", gap: 8, padding: "8px 10px", borderRadius: 7, border: "none", cursor: "pointer", background: "transparent", color: P.muted, textAlign: "left", fontSize: 11, fontFamily: "'DM Sans',sans-serif", marginTop: 4 }}>
+            <button onClick={() => window.open('https://dropgear-web.up.railway.app', '_blank')} style={{ width: "100%", display: "flex", alignItems: "center", gap: 8, padding: "8px 10px", borderRadius: 7, border: "none", cursor: "pointer", background: "transparent", color: P.muted, textAlign: "left", fontSize: 11, fontFamily: "'DM Sans',sans-serif", marginTop: 4 }}>
               ↗ Ver mi tienda
             </button>
           </div>
