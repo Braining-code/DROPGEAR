@@ -27,7 +27,7 @@ const dropgear = {
 // STORE CONFIG
 // ─────────────────────────────────────────────────────────────────────────────
 const storeConfig = {
-  name: "Gourmet del Oeste",
+  name: "Gear Oficial",
   primaryColor: "#C8472B",
   secondaryColor: "#F7F3EC",
   inkColor: "#1A1410",
